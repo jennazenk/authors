@@ -6,7 +6,6 @@ var User = require('../api/users/user.model');
 
 
 router.post('/login', function(req, res, next) {
-
     User.findOne({
             where: req.body
         })
@@ -15,14 +14,13 @@ router.post('/login', function(req, res, next) {
                 res.sendStatus(401);
             } else {
                 req.session.userId = user.id; //persists the user to the session
-                res.sendStatus(204);
+                res.status(204).json(user);
             }
         })
         .catch(next);
 });
 
 router.put('/signup', function(req, res, next) {
-    console.log('AND HERE', req.body);
     User.create(req.body)
     .then(function(user) {
         req.session.userId = user.id;
@@ -30,6 +28,19 @@ router.put('/signup', function(req, res, next) {
     })
         
 });
+
+router.delete('/logout',function(req,res,next){
+
+    if(req.session){
+        req.session.destroy()
+        res.send('Session ended');
+    } else{
+        res.send('No active session',500);
+    }
+})
+
+//zeke@zeke.zeke
+
 
 
 
