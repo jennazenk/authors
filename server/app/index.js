@@ -23,11 +23,6 @@ app.use(session({
 
 app.use(function(req, res, next) {
     console.log('session', req.session);
-    console.log(new Date);
-    
-    setTimeout(function(){
-    	console.log(req.session)},10000);
-
     next();
 });
 
@@ -44,7 +39,7 @@ app.use(require('./statics.middleware'));
 
 app.use('/api', require('../api/api.router'));
 
-app.use('/login', require('./session-router'));
+app.use('/', require('./session-router'));
 
 var validFrontendRoutes = ['/', '/stories', '/users', '/stories/:id', '/users/:id', '/signup', '/login'];
 var indexPath = path.join(__dirname, '..', '..', 'public', 'index.html');

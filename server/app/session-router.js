@@ -5,9 +5,7 @@ var db = require('../_db');
 var User = require('../api/users/user.model');
 
 
-router.post('/', function(req, res, next) {
-
-	console.log(req.session.cookie);
+router.post('/login', function(req, res, next) {
 
     User.findOne({
             where: req.body
@@ -22,5 +20,17 @@ router.post('/', function(req, res, next) {
         })
         .catch(next);
 });
+
+router.put('/signup', function(req, res, next) {
+    console.log('AND HERE', req.body);
+    User.create(req.body)
+    .then(function(user) {
+        req.session.userId = user.id;
+        res.send(user);
+    })
+        
+});
+
+
 
 module.exports = router;
