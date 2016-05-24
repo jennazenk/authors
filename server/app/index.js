@@ -2,12 +2,32 @@
 
 var app = require('express')();
 var path = require('path');
+var session = require('express-session');
+
+
+
+app.use(session({
+  // this mandatory configuration ensures that session IDs are not predictable
+  secret: 'tongiscool' // or whatever you like
+}));
+console.log('hello')
+
+
+app.use('/api', function (req, res, next) {
+  if (!req.session.counter) req.session.counter = 0;
+  console.log('counter', ++req.session.counter);
+  next();
+});
+
 
 app.use(require('./logging.middleware'));
+
 
 app.use(require('./request-state.middleware'));
 
 app.use(require('./statics.middleware'));
+
+
 
 app.use('/api', require('../api/api.router'));
 
