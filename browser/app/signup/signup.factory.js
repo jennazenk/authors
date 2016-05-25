@@ -1,18 +1,18 @@
-'use strict';
+// 'use strict';
 
-app.factory('Signup', function ($http) {
+// app.factory('Signup', function ($http) {
  
-  var Signup = {}
+//   var Signup = {}
 
-	Signup.signup = function(data) {
-		console.log('HEREEE',data)
-		return $http.put('/signup', data)
-		.then(function(response) {
-			console.log(response.data);
-		})
-	}	  
+// 	Signup.signup = function(data) {
+// 		console.log('HEREEE',data)
+// 		return $http.put('/signup', data)
+// 		.then(function(response) {
+// 			console.log(response.data);
+// 		})
+// 	}	  
   
 
-  return Signup;
+//   return Signup;
 
-});
+// });

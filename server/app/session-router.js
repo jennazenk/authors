@@ -10,11 +10,12 @@ router.post('/login', function(req, res, next) {
             where: req.body
         })
         .then(function(user) {
+            
             if (!user) {
                 res.sendStatus(401);
             } else {
                 req.session.userId = user.id; //persists the user to the session
-                res.status(204).json(user);
+                res.send(user);
             }
         })
         .catch(next);

@@ -2,13 +2,19 @@
 
 app.controller('AuthCtrl', function ($scope, Auth, $state, $log) {
 
+	$scope.currentUser = {}; 
+
 	$scope.submit = function() {
 	var loginInfo = {
 		'email': $scope.email,
 		'password' : $scope.password
 	}
 	   Auth.submitLogin(loginInfo)	
-		.then(function() {
+		.then(function(response) {
+			$scope.currentUser = {
+				id : response.id,
+				admin : response.isAdmin
+			}
 			$state.go('stories');
 		})
 		.catch($log.error);			

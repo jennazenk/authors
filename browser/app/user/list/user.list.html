@@ -22,7 +22,7 @@
       ui-sref-active="active"
       class="list-group-item min-content"
       ng-if="!user.isDestroyed">
-      <user-item model="user" after-remove="user.isDestroyed = true"></user-item>
+      <user-item model="user" test="currentUser" after-remove="user.isDestroyed = true"></user-item>
     </a>
   </div>
   <div class="fixed">
