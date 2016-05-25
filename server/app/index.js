@@ -4,22 +4,56 @@ var app = require('express')();
 var path = require('path');
 var session = require('express-session');
 var passport = require('passport');
+var User = require('../api/users/user.model');
+
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 passport.use(
   new GoogleStrategy({
-    clientID: '488614920698-klt7m403nsrtff8f488614920698-klt7m403nsrtff8fsrbvncp8s63l4q7r.apps.googleusercontent.comsrbvncp8s63l4q7r.apps.googleusercontent.com',
+    clientID: '488614920698-klt7m403nsrtff8fsrbvncp8s63l4q7r.apps.googleusercontent.com',
     clientSecret: '98oTX4K8ZCvt5rH2GQ-gDFjE',
-    callbackURL: 'YOUR_CALLBACK_URL'
+    callbackURL: 'http://127.0.0.1:8080/auth/google/callback'
   },
   // Google will send back the token and profile
   function (token, refreshToken, profile, done) {
-    // the callback will pass back user profile information and each service (Facebook, Twitter, and Google) will pass it back a different way. Passport standardizes the information that comes back in its profile object.
-    /*
-    --- fill this part in ---
-    */
-    
+  
+    console.log('---', 'in verification callback', profile, '---');
+      
+    var info = {
+      name: profile.displayName,
+      email: profile.emails[0].value,
+      photo: profile.photos ? profile.photos[0].value : undefined
+    };
+
+
+    User.findOrCreate({
+      where: {googleId: profile.id},
+      defaults: info
+      })
+    .spread(function(user){
+      done(null,user)
+
+      console.log('-------------------------',user,'=====================');
+
+    })
+    .catch(done)
+
   })
 );
+
+passport.serializeUser(function(user,done){
+  done(null,user.id)
+});
+
+passport.deserializeUser(function (id, done) {
+  User.findById(id)
+  .then(function (user) {
+    done(null, user);
+  })
+  .catch(function (err) {
+    done(err);
+  });
+});
 
 
 app.use(require('./logging.middleware'));
@@ -43,8 +77,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
+
 app.use(function(req, res, next) {
+
+
     console.log('session', req.session);
+    console.log('++++++++++++++++++++Reg.user++++++++++++++++',req.user)
+
     next();
 });
 
@@ -56,7 +96,7 @@ app.get('/auth/google', passport.authenticate('google', { scope : 'email' }));
 // handle the callback after Google has authenticated the user
 app.get('/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect : '/stories', // or wherever
+    successRedirect : '/users', // or wherever
     failureRedirect : '/signup' // or wherever
   })
 );
